@@ -48,6 +48,7 @@ public class M2ArgumentCollection extends AssemblyBasedCallerArgumentCollection 
     public static final String PCR_SNV_QUAL_LONG_NAME = "pcr-snv-qual";
     public static final String PCR_INDEL_QUAL_LONG_NAME = "pcr-indel-qual";
     public static final String F1R2_TAR_GZ_NAME = "f1r2-tar-gz";
+    public static final String TRAINING_DATA_MODE_LONG_NAME = "training-data-mode";
 
     public static final double DEFAULT_AF_FOR_TUMOR_ONLY_CALLING = 5e-8;
     public static final double DEFAULT_AF_FOR_TUMOR_NORMAL_CALLING = 1e-6;
@@ -154,6 +155,12 @@ public class M2ArgumentCollection extends AssemblyBasedCallerArgumentCollection 
      */
     @Argument(fullName = MITOCHONDRIA_MODE_LONG_NAME, optional = true, doc="Mitochondria mode sets emission and initial LODs to 0.")
     public Boolean mitochondria = false;
+
+    /**
+     * Training data mode collects data on variant- and artifact-supporting read sets for fitting a deep learning filtering model
+     */
+    @Argument(fullName = TRAINING_DATA_MODE_LONG_NAME, optional = true, doc="Output VCF contains featurized sets of reads for training a deep variant filter.")
+    public Boolean trainingDataMode = false;
 
     /**
      * Only variants with tumor LODs exceeding this threshold will be written to the VCF, regardless of filter status.

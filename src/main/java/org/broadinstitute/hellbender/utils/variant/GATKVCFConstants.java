@@ -132,6 +132,7 @@ public final class GATKVCFConstants {
     public static final String GENOTYPE_QUALITY_BY_ALT_CONFIDENCE = "ALTGQ"; //GnarlyGenotyper
     public static final String STRAND_COUNT_BY_SAMPLE_KEY =         "SAC";
     public static final String STRAND_BIAS_BY_SAMPLE_KEY =          "SB";
+    public static final String FEATURIZED_READ_SETS_KEY =          "FRS";
     public final static String TRANSMISSION_PROBABILITY_KEY =       "TP"; //PhaseByTransmission
 
     // M2-specific FORMAT keys
