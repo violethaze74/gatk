@@ -76,7 +76,7 @@ public class FeaturizedReadSets extends GenotypeAnnotation {
     }
 
     private List<Integer> featurize(final GATKRead read, final VariantContext vc) {
-        final List<Integer> result = new ArrayList();
+        final List<Integer> result = new ArrayList<>();
         result.add(read.getMappingQuality());
         result.add(BaseQuality.getBaseQuality(read, vc).orElse(DEFAULT_BASE_QUALITY));
         result.add(read.isFirstOfPair() ? 1 : 0);
