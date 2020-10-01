@@ -54,8 +54,9 @@ public class FeaturizedReadSets extends GenotypeAnnotation {
                 .filter(ba -> ba.isInformative())
                 .forEach(ba -> flattenedFeaturizedReads.get(ba.allele).addAll(featurize(ba.evidence, vc)));
 
-        final List<List<Integer>> dataInAlleleOrder = likelihoods.alleles().stream().map(flattenedFeaturizedReads::get).collect(Collectors.toList());
-        final List<String> stringsInAlleleOrder = dataInAlleleOrder.stream().map(list -> StringUtils.join(list, ",")).collect(Collectors.toList());
+        final List<String> stringsInAlleleOrder = vc.getAlleles().stream()
+                .map(flattenedFeaturizedReads::get)
+                .map(list -> StringUtils.join(list, ",")).collect(Collectors.toList());
 
         final String annotation = AnnotationUtils.encodeAnyASListWithRawDelim(stringsInAlleleOrder);
 
