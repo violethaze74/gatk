@@ -13,6 +13,7 @@ import org.broadinstitute.hellbender.utils.Utils;
 import org.broadinstitute.hellbender.utils.genotyper.AlleleLikelihoods;
 import org.broadinstitute.hellbender.utils.help.HelpConstants;
 import org.broadinstitute.hellbender.utils.read.GATKRead;
+import org.broadinstitute.hellbender.utils.read.ReadUtils;
 import org.broadinstitute.hellbender.utils.variant.GATKVCFConstants;
 import org.broadinstitute.hellbender.utils.variant.GATKVCFHeaderLines;
 
@@ -32,7 +33,7 @@ public class FeaturizedReadSets extends GenotypeAnnotation {
 
     private static final int DEFAULT_MAX_REF_COUNT = Integer.MAX_VALUE;
 
-    private static final int FEATURES_PER_READ = 6;
+    private static final int FEATURES_PER_READ = 9;
 
     // downsample ref reads to this count if needed
     private final int maxRefCount;
@@ -108,8 +109,21 @@ public class FeaturizedReadSets extends GenotypeAnnotation {
         result.add(BaseQuality.getBaseQuality(read, vc).orElse(DEFAULT_BASE_QUALITY));
         result.add(read.isFirstOfPair() ? 1 : 0);
         result.add(read.isReverseStrand() ? 1 : 0);
-        result.add(ReadPosition.getPosition(read, vc).orElse(0));
+
+        // distances from ends of read
+        final int readPosition = ReadPosition.getPosition(read, vc).orElse(0);
+        result.add(readPosition);
+        result.add(read.getLength() - readPosition);
+
+
         result.add(Math.abs(read.getFragmentLength()));
+
+        // distances from ends of fragment
+        final int fragmentStart = Math.min(read.getMateStart(), read.getUnclippedStart());
+        final int fragmentEnd = fragmentStart + Math.abs(read.getFragmentLength());
+        result.add(vc.getStart() - fragmentStart);
+        result.add(fragmentEnd - vc.getEnd());
+
 
         Utils.validate(result.size() == FEATURES_PER_READ, "Wrong number of features");
 
