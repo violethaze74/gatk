@@ -363,7 +363,7 @@ public class Mutect2IntegrationTest extends CommandLineProgramTest {
                     args -> args.add(AssemblyBasedCallerArgumentCollection.FORCE_CALL_ALLELES_LONG_NAME, forceCalls),
                     args -> args.add(ReadThreadingAssemblerArgumentCollection.KMER_SIZE_LONG_NAME, kmerSize),
                     args -> args.add(ReadThreadingAssemblerArgumentCollection.DONT_INCREASE_KMER_SIZE_LONG_NAME, true),
-                    args -> args.addFlag("training-data-mode"));
+                    args -> args.addFlag("training-data-mode").add("training-data-mode-ref-downsample", 5));
 
             final Map<Integer, List<Allele>> altAllelesByPosition = VariantContextTestUtils.streamVcf(unfilteredVcf)
                     .collect(Collectors.toMap(VariantContext::getStart, VariantContext::getAlternateAlleles));

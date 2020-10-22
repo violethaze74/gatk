@@ -16,10 +16,7 @@ import org.broadinstitute.hellbender.utils.read.GATKRead;
 import org.broadinstitute.hellbender.utils.variant.GATKVCFConstants;
 import org.broadinstitute.hellbender.utils.variant.GATKVCFHeaderLines;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -32,6 +29,21 @@ import java.util.stream.Collectors;
         summary="Featurized read sets for Mutect3 training data")
 public class FeaturizedReadSets extends GenotypeAnnotation {
     public static final int DEFAULT_BASE_QUALITY = 25;
+
+    private static final int DEFAULT_MAX_REF_COUNT = Integer.MAX_VALUE;
+
+    private static final int FEATURES_PER_READ = 6;
+
+    // downsample ref reads to this count if needed
+    private final int maxRefCount;
+
+    public FeaturizedReadSets(final int maxRefCount) {
+        this.maxRefCount = maxRefCount;
+    }
+
+    public FeaturizedReadSets() {
+        this(DEFAULT_MAX_REF_COUNT);
+    }
 
     @Override
     public void annotate(final ReferenceContext ref,
@@ -47,16 +59,30 @@ public class FeaturizedReadSets extends GenotypeAnnotation {
             return;
         }
 
-        final Map<Allele, List<Integer>> flattenedFeaturizedReads = likelihoods.alleles().stream()
+
+
+        final Map<Allele, List<GATKRead>> readsByAllele = likelihoods.alleles().stream()
                 .collect(Collectors.toMap(a -> a, a -> new ArrayList<>()));
 
         Utils.stream(likelihoods.bestAllelesBreakingTies())
                 .filter(ba -> ba.isInformative())
-                .forEach(ba -> flattenedFeaturizedReads.get(ba.allele).addAll(featurize(ba.evidence, vc)));
+                .forEach(ba -> readsByAllele.get(ba.allele).add(ba.evidence));
+
+        // downsample if necessary
+        final Allele refAllele = likelihoods.alleles().stream().filter(Allele::isReference).findFirst().get();
+        if (readsByAllele.get(refAllele).size() > maxRefCount) {
+            Collections.shuffle(readsByAllele.get(refAllele));
+            readsByAllele.put(refAllele, readsByAllele.get(refAllele).subList(0, maxRefCount));
+        }
 
         final List<String> stringsInAlleleOrder = vc.getAlleles().stream()
-                .map(flattenedFeaturizedReads::get)
-                .map(list -> StringUtils.join(list, ",")).collect(Collectors.toList());
+                .map(allele -> {
+                            final List<GATKRead> reads = readsByAllele.get(allele);
+                            final List<Integer> flattened = new ArrayList<>(reads.size() * FEATURES_PER_READ);
+                            reads.forEach(read -> flattened.addAll(featurize(read, vc)));
+                            return StringUtils.join(flattened, ",");
+                        }).collect(Collectors.toList());
+
 
         final String annotation = AnnotationUtils.encodeAnyASListWithRawDelim(stringsInAlleleOrder);
 
@@ -84,6 +110,8 @@ public class FeaturizedReadSets extends GenotypeAnnotation {
         result.add(read.isReverseStrand() ? 1 : 0);
         result.add(ReadPosition.getPosition(read, vc).orElse(0));
         result.add(Math.abs(read.getFragmentLength()));
+
+        Utils.validate(result.size() == FEATURES_PER_READ, "Wrong number of features");
 
         return result;
     }
