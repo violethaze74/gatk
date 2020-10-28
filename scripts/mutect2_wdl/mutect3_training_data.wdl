@@ -68,8 +68,8 @@ workflow Mutect3TrainingData {
             input:
                 intervals = intervals,
                 masks = masks,
-                truth_vcf = truth_vcf,
-                truth_vcf_idx = truth_vcf_idx,
+                truth_vcf = select_first([truth_vcf]),
+                truth_vcf_idx = select_first([truth_vcf_idx]),
                 eval_vcf = Tumor.filtered_vcf,
                 eval_vcf_idx = Tumor.filtered_vcf_idx,
                 preemptible = preemptible,
