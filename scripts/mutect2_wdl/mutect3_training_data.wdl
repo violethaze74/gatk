@@ -2,7 +2,7 @@ version 1.0
 
 import "https://raw.githubusercontent.com/gatk-workflows/gatk4-somatic-snvs-indels/2.6.0/mutect2.wdl" as m2
 
-workflow Mutect2Concordance {
+workflow Mutect3TrainingData {
     input {
         File? intervals
         File? masks
@@ -73,9 +73,20 @@ workflow Mutect2Concordance {
             gatk_docker = gatk_docker
     }
 
+    call MakeTable {
+        input:
+            tpfp = Concordance.tpfp,
+            tpfp_idx = Concordance.tpfp_idx,
+            ftnfn = Concordance.ftnfn,
+            ftnfn_idx = Concordance.ftnfn_idx,
+            gatk_override = gatk_override,
+            gatk_docker = gatk_docker,
+            preemptible = preemptible
+    }
+
 
     output {
-
+        File table = MakeTable.table
     }
 }
 
@@ -139,21 +150,21 @@ task MakeTable {
     command {
         export GATK_LOCAL_JAR=${default="/root/gatk.jar" gatk_override}
 
+        touch output.table
         for file in ~{tpfp} ~{ftnfn}; do
-          gatk --java-options "-Xmx2g" SelectVariants -V $file --restrict-alleles-to BIALLELIC -O biallelic.vcf
-          gatk --java-options "-Xmx2g" VariantsToTable -V biallelic.vcf \
-            -F CHROM -F POS -F REF -F ALT -F POPAF -F TLOD -F STATUS -F REF_BASES -GF FRS \
-            --show-filtered \
-            -O $file.table
-          head -n 1 $file.table > HEADER
-        done
+        gatk --java-options "-Xmx2g" SelectVariants -V $file --restrict-alleles-to BIALLELIC -O biallelic.vcf
+        gatk --java-options "-Xmx2g" VariantsToTable -V biallelic.vcf \
+        -F CHROM -F POS -F REF -F ALT -F POPAF -F TLOD -F STATUS -F REF_BASES -GF FRS \
+        --show-filtered \
+        -O tmp.table
 
-        mv HEADER output.txt
-        for file in *.table; do
-          tail -n +2 $file >> output.txt
+        # if it's the first table, copy it to the output; otherwise copy all but the header line
+        if [ -f output.table ]; then
+        mv tmp.table output.table
+        else
+        tail -n +2 tmp.table >> output.table
+        fi
         done
-
-        mv output.txt output.table
     }
 
     runtime {
