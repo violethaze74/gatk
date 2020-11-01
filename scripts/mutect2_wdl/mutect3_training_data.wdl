@@ -242,20 +242,19 @@ task MakeTableFromConcordance {
     command {
         export GATK_LOCAL_JAR=${default="/root/gatk.jar" gatk_override}
 
-        touch output.table
         for file in ~{tpfp} ~{ftnfn}; do
-        gatk --java-options "-Xmx2g" SelectVariants -V $file --restrict-alleles-to BIALLELIC -O biallelic.vcf
-        gatk --java-options "-Xmx2g" VariantsToTable -V biallelic.vcf \
-          -F CHROM -F POS -F REF -F ALT -F POPAF -F TLOD -F STATUS -F REF_BASES -GF FRS \
-          --show-filtered \
-          -O tmp.table
+            gatk --java-options "-Xmx2g" SelectVariants -V $file --restrict-alleles-to BIALLELIC -O biallelic.vcf
+            gatk --java-options "-Xmx2g" VariantsToTable -V biallelic.vcf \
+              -F CHROM -F POS -F REF -F ALT -F POPAF -F TLOD -F STATUS -F REF_BASES -GF FRS \
+              --show-filtered \
+              -O tmp.table
 
-        # if it's the first table, copy it to the output; otherwise copy all but the header line
-        if [ -f output.table ]; then
-        mv tmp.table output.table
-        else
-        tail -n +2 tmp.table >> output.table
-        fi
+            # if it's the first table, copy it to the output; otherwise copy all but the header line
+            if [ ! -f output.table ]; then
+                mv tmp.table output.table
+            else
+                tail -n +2 tmp.table >> output.table
+            fi
         done
     }
 
