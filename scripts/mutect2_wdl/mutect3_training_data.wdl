@@ -209,7 +209,7 @@ task MakeTableFromMutect2 {
 
         gatk --java-options "-Xmx2g" SelectVariants -V ~{filtered_vcf} --restrict-alleles-to BIALLELIC -O biallelic.vcf
         gatk --java-options "-Xmx2g" VariantsToTable -V biallelic.vcf \
-          -F CHROM -F POS -F REF -F ALT -F POPAF -F TLOD -F STATUS -F REF_BASES -F DP -F FILTER -GF FRS \
+          -F CHROM -F POS -F REF -F ALT -F POPAF -F TLOD -F STATUS -F REF_BASES -GF DP -F FILTER -GF FRS \
           --show-filtered \
           -O output.table
     }
@@ -245,7 +245,7 @@ task MakeTableFromConcordance {
         for file in ~{tpfp} ~{ftnfn}; do
             gatk --java-options "-Xmx2g" SelectVariants -V $file --restrict-alleles-to BIALLELIC -O biallelic.vcf
             gatk --java-options "-Xmx2g" VariantsToTable -V biallelic.vcf \
-              -F CHROM -F POS -F REF -F ALT -F POPAF -F TLOD -F STATUS -F REF_BASES -F DP -F FILTER -GF FRS \
+              -F CHROM -F POS -F REF -F ALT -F POPAF -F TLOD -F STATUS -F REF_BASES -GF DP -F FILTER -GF FRS \
               --show-filtered \
               -O tmp.table
 
