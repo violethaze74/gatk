@@ -85,9 +85,4 @@ public final class  DepthPerSampleHC extends GenotypeAnnotation implements Stand
     public List<String> getKeyNames() {
         return Collections.singletonList(VCFConstants.DEPTH_KEY);
     }
-
-    @Override
-    public List<VCFFormatHeaderLine> getDescriptions() {
-        return Collections.singletonList(VCFStandardHeaderLines.getFormatLine(VCFConstants.DEPTH_KEY));
-    }
 }

@@ -82,9 +82,4 @@ public final class DepthPerAlleleBySample extends GenotypeAnnotation implements 
 
     @Override
     public List<String> getKeyNames() { return Collections.singletonList(VCFConstants.GENOTYPE_ALLELE_DEPTHS); }
-
-    @Override
-    public List<VCFFormatHeaderLine> getDescriptions() {
-        return Collections.singletonList(VCFStandardHeaderLines.getFormatLine(getKeyNames().get(0)));
-    }
 }

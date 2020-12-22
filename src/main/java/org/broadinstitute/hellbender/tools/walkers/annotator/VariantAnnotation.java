@@ -1,11 +1,37 @@
 package org.broadinstitute.hellbender.tools.walkers.annotator;
 
+import com.google.common.collect.ImmutableList;
+import htsjdk.variant.vcf.VCFCompoundHeaderLine;
+import htsjdk.variant.vcf.VCFHeaderLine;
+import htsjdk.variant.vcf.VCFInfoHeaderLine;
+import org.broadinstitute.hellbender.utils.variant.GATKVCFHeaderLines;
+
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Superclass of all variant annotations.
  */
 public abstract class VariantAnnotation implements Annotation{
+
+    // is this an INFO or FORMAT annotation
+    public abstract VCFCompoundHeaderLine.SupportedHeaderLineType annotationType();
+
+    private final List<VCFHeaderLine> headerLines = getKeyNames().stream().map(key -> {
+        switch (annotationType()) {
+            case INFO:
+                return GATKVCFHeaderLines.getInfoLine(key);
+            case FORMAT:
+                return GATKVCFHeaderLines.getFormatLine(key);
+            default:
+                throw new IllegalStateException("Unsupported annotation type: " + annotationType());
+
+        }}).collect(Collectors.collectingAndThen(Collectors.toList(), ImmutableList::copyOf));
+
+    // Return the descriptions used for the VCF INFO or FORMAT meta field.
+    public List<VCFHeaderLine> getDescriptions() {
+        return headerLines;
+    }
 
     /**
      * Return the keys

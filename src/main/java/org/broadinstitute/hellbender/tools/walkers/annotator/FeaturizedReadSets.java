@@ -98,11 +98,6 @@ public class FeaturizedReadSets extends GenotypeAnnotation {
         return Collections.singletonList(GATKVCFConstants.FEATURIZED_READ_SETS_KEY);
     }
 
-    @Override
-    public List<VCFFormatHeaderLine> getDescriptions() {
-        return Collections.singletonList(GATKVCFHeaderLines.getFormatLine(getKeyNames().get(0)));
-    }
-
     private List<Integer> featurize(final GATKRead read, final VariantContext vc) {
         final List<Integer> result = new ArrayList<>();
         result.add(read.getMappingQuality());
@@ -123,6 +118,9 @@ public class FeaturizedReadSets extends GenotypeAnnotation {
         final int fragmentEnd = fragmentStart + Math.abs(read.getFragmentLength());
         result.add(vc.getStart() - fragmentStart);
         result.add(fragmentEnd - vc.getEnd());
+
+        // TODO: mismatches versus best haplotype
+
 
 
         Utils.validate(result.size() == FEATURES_PER_READ, "Wrong number of features");

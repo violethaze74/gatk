@@ -206,11 +206,11 @@ public class GATKVCFHeaderLines {
         addInfoLine(new VCFInfoHeaderLine(ORIGINAL_CONTIG_MISMATCH_KEY, 1, VCFHeaderLineType.Integer, "Number of alt reads whose original alignment doesn't match the current contig."));
         addInfoLine(new VCFInfoHeaderLine(N_COUNT_KEY, 1, VCFHeaderLineType.Integer, "Count of N bases in the pileup"));
         addInfoLine(new VCFInfoHeaderLine(AS_UNIQUE_ALT_READ_SET_COUNT_KEY, VCFHeaderLineCount.A, VCFHeaderLineType.Integer, "Number of reads with unique start and mate end positions for each alt at a variant site"));
-        addInfoLine(new BaseQuality().getDescriptions().get(0));
-        addInfoLine(new FragmentLength().getDescriptions().get(0));
-        addInfoLine(new MappingQuality().getDescriptions().get(0));
-        addInfoLine(new ReadPosition().getDescriptions().get(0));
-        addInfoLine(new AS_StrandBiasMutectAnnotation().getDescriptions().get(0));
+        addInfoLine(new VCFInfoHeaderLine(MEDIAN_BASE_QUALITY_KEY, VCFHeaderLineCount.R, VCFHeaderLineType.Integer, "median base quality by allele"));
+        addInfoLine(new VCFInfoHeaderLine(MEDIAN_FRAGMENT_LENGTH_KEY, VCFHeaderLineCount.R, VCFHeaderLineType.Integer, "median fragment length by allele"));
+        addInfoLine(new VCFInfoHeaderLine(MEDIAN_MAPPING_QUALITY_KEY, VCFHeaderLineCount.R, VCFHeaderLineType.Integer, "median mapping quality by allele"));
+        addInfoLine(new VCFInfoHeaderLine(MEDIAN_READ_POSITON_KEY, VCFHeaderLineCount.A, VCFHeaderLineType.Integer, "median distance from end of read"));
+        addInfoLine(new VCFInfoHeaderLine(AS_SB_TABLE_KEY, VCFHeaderLineCount.A, VCFHeaderLineType.Integer, "median distance from end of read"));
         addInfoLine(new VCFInfoHeaderLine(UNITIG_SIZES_KEY, VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.Integer, "Sizes of reassembled unitigs"));
         addInfoLine(new VCFInfoHeaderLine(JOINT_ALIGNMENT_COUNT_KEY, 1, VCFHeaderLineType.Integer, "Number of joint alignments"));
         addInfoLine(new VCFInfoHeaderLine(ALIGNMENT_SCORE_DIFFERENCE_KEY, 1, VCFHeaderLineType.Integer, "Difference in alignment score between best and next-best alignment"));

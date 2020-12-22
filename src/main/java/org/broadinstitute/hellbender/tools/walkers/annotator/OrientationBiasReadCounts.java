@@ -51,13 +51,6 @@ public final class OrientationBiasReadCounts extends GenotypeAnnotation implemen
     }
 
     @Override
-    public List<VCFFormatHeaderLine> getDescriptions() {
-        return Arrays.asList(
-                GATKVCFHeaderLines.getFormatLine(GATKVCFConstants.F1R2_KEY),
-                GATKVCFHeaderLines.getFormatLine(GATKVCFConstants.F2R1_KEY));
-    }
-
-    @Override
     public void annotate(final ReferenceContext refContext,
                                   final VariantContext vc,
                                   final Genotype g,
