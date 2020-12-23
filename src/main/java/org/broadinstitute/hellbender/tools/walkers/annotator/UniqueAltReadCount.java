@@ -45,11 +45,6 @@ public class UniqueAltReadCount extends InfoFieldAnnotation implements AlleleSpe
     }
 
     @Override
-    public List<VCFInfoHeaderLine> getDescriptions() {
-        return Collections.singletonList(GATKVCFHeaderLines.getInfoLine(KEY));
-    }
-
-    @Override
     public Map<String, Object> annotate(final ReferenceContext ref,
                          final VariantContext vc,
                          final AlleleLikelihoods<GATKRead, Allele> likelihoods) {

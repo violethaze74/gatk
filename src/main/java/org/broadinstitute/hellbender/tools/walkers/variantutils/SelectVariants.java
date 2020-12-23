@@ -858,7 +858,7 @@ public final class SelectVariants extends VariantWalker {
             headerLines.add(GATKVCFHeaderLines.getInfoLine(GATKVCFConstants.ORIGINAL_DP_KEY));
         }
 
-        headerLines.addAll(Arrays.asList(ChromosomeCounts.descriptions));
+        headerLines.addAll(new ChromosomeCounts().getDescriptions());
         headerLines.add(VCFStandardHeaderLines.getInfoLine(VCFConstants.DEPTH_KEY));
 
         //remove header lines for info field and genotype annotations being dropped

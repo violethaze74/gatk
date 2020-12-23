@@ -6,6 +6,7 @@ import htsjdk.variant.variantcontext.Genotype;
 import htsjdk.variant.variantcontext.VariantContext;
 import htsjdk.variant.variantcontext.VariantContextBuilder;
 import htsjdk.variant.vcf.VCFConstants;
+import htsjdk.variant.vcf.VCFHeaderLine;
 import htsjdk.variant.vcf.VCFInfoHeaderLine;
 import htsjdk.variant.vcf.VCFStandardHeaderLines;
 import org.broadinstitute.barclay.argparser.Argument;
@@ -85,20 +86,6 @@ public final class RMSMappingQuality extends InfoFieldAnnotation implements Stan
         allKeys.add(VCFConstants.RMS_MAPPING_QUALITY_KEY);
         allKeys.addAll(getRawKeyNames());
         return allKeys;
-    }
-
-    @Override
-    public List<VCFInfoHeaderLine> getDescriptions() {
-        return Arrays.asList(VCFStandardHeaderLines.getInfoLine(getKeyNames().get(0)));
-    }
-
-    @Override
-    public List<VCFInfoHeaderLine> getRawDescriptions() {
-        final List<VCFInfoHeaderLine> lines = new ArrayList<>(1);
-        for (final String rawKey : getRawKeyNames()) {
-            lines.add(GATKVCFHeaderLines.getInfoLine(rawKey));
-        }
-        return lines;
     }
 
     /**

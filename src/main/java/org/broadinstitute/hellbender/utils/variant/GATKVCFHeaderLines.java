@@ -14,18 +14,34 @@ import static org.broadinstitute.hellbender.utils.variant.GATKVCFConstants.*;
  */
 public class GATKVCFHeaderLines {
 
-    public static VCFInfoHeaderLine getInfoLine(final String id) {
-        if (!infoLines.containsKey(id)) {
+    public static VCFInfoHeaderLine getInfoLine(final String id, final boolean lookInVCFStandardLines) {
+        if (infoLines.containsKey(id)) {
+            return infoLines.get(id);
+        } else if (lookInVCFStandardLines) {
+            return VCFStandardHeaderLines.getInfoLine(id);
+        } else {
             throw new IllegalStateException("No VCF INFO header line found for key " + id);
         }
-        return infoLines.get(id);
     }
-    public static VCFFormatHeaderLine getFormatLine(final String id) {
-        if (!formatLines.containsKey(id)) {
-            throw new IllegalStateException("No VCF FORMAT header line found for key " + id);
+
+    public static VCFInfoHeaderLine getInfoLine(final String id) {
+        return getInfoLine(id, false);
+    }
+
+    public static VCFFormatHeaderLine getFormatLine(final String id, final boolean lookInVCFStandardLines) {
+        if (formatLines.containsKey(id)) {
+            return formatLines.get(id);
+        } else if (lookInVCFStandardLines) {
+            return VCFStandardHeaderLines.getFormatLine(id);
+        } else {
+            throw new IllegalStateException("No VCF INFO header line found for key " + id);
         }
-        return formatLines.get(id);
     }
+
+    public static VCFFormatHeaderLine getFormatLine(final String id) {
+        return getFormatLine(id, false);
+    }
+
     public static VCFFilterHeaderLine getFilterLine(final String id) {
         if (!filterLines.containsKey(id)) {
             throw new IllegalStateException("No VCF FILTER header line found for key " + id);
@@ -188,6 +204,9 @@ public class GATKVCFHeaderLines {
         addInfoLine(new VCFInfoHeaderLine(GENOTYPE_AND_VALIDATE_STATUS_KEY, 1, VCFHeaderLineType.String, "Value from the validation VCF"));
         addInfoLine(new VCFInfoHeaderLine(INTERVAL_GC_CONTENT_KEY, 1, VCFHeaderLineType.Float, "GC Content of the interval"));
         addInfoLine(new VCFInfoHeaderLine(GENOTYPE_PRIOR_KEY, VCFHeaderLineCount.G, VCFHeaderLineType.Integer, "Genotype Likelihood Prior"));
+        addInfoLine(new VCFInfoHeaderLine(BASE_QUAL_HISTOGRAM_KEY, VCFHeaderLineCount.A, VCFHeaderLineType.Integer,
+                "Base quality counts for each allele represented sparsely as alternating entries of qualities and counts for each allele." +
+                        "For example [10,1,0,20,0,1] means one ref base with quality 10 and one alt base with quality 20."));
 
         // M2-related info lines
         addInfoLine(new VCFInfoHeaderLine(EVENT_COUNT_IN_HAPLOTYPE_KEY, 1, VCFHeaderLineType.Integer, "Number of events in this haplotype"));
@@ -214,5 +233,6 @@ public class GATKVCFHeaderLines {
         addInfoLine(new VCFInfoHeaderLine(UNITIG_SIZES_KEY, VCFHeaderLineCount.UNBOUNDED, VCFHeaderLineType.Integer, "Sizes of reassembled unitigs"));
         addInfoLine(new VCFInfoHeaderLine(JOINT_ALIGNMENT_COUNT_KEY, 1, VCFHeaderLineType.Integer, "Number of joint alignments"));
         addInfoLine(new VCFInfoHeaderLine(ALIGNMENT_SCORE_DIFFERENCE_KEY, 1, VCFHeaderLineType.Integer, "Difference in alignment score between best and next-best alignment"));
+        addInfoLine(new VCFInfoHeaderLine(REFERENCE_BASES_KEY, 1, VCFHeaderLineType.String, "local reference bases."));
     }
 }

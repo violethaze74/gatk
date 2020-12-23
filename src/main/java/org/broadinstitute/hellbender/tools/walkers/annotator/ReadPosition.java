@@ -40,9 +40,6 @@ public class ReadPosition extends PerAlleleAnnotation implements StandardMutectA
     protected String getVcfKey() { return GATKVCFConstants.MEDIAN_READ_POSITON_KEY; }
 
     @Override
-    protected String getDescription() { return "median distance from end of read"; }
-
-    @Override
     protected OptionalInt getValueForRead(final GATKRead read, final VariantContext vc) {
         return getPosition(read, vc);
     }

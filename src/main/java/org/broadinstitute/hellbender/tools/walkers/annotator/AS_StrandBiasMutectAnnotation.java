@@ -38,11 +38,6 @@ public class AS_StrandBiasMutectAnnotation extends InfoFieldAnnotation implement
     }
 
     @Override
-    public List<VCFInfoHeaderLine> getDescriptions() {
-        return super.getDescriptions();
-    }
-
-    @Override
     public List<String> getKeyNames() {
         return Collections.singletonList(GATKVCFConstants.AS_SB_TABLE_KEY);
     }
