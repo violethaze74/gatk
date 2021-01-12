@@ -279,7 +279,10 @@ public class Mutect2IntegrationTest extends CommandLineProgramTest {
         final File unfilteredVcf = createTempFile("unfiltered", ".vcf");
         final File filteredVcf = createTempFile("filtered", ".vcf");
 
-        runMutect2(tumor, unfilteredVcf, "20:10000000-10010000", b37Reference, Optional.of(GNOMAD));
+        //runMutect2(tumor, unfilteredVcf, "20:10000000-10010000", b37Reference, Optional.of(GNOMAD));
+        runMutect2(tumor, unfilteredVcf, "20:10000000-10010000", b37Reference, Optional.of(GNOMAD),
+                args -> args.add("A", "FeaturizedReadSets"));
+
         runFilterMutectCalls(unfilteredVcf, filteredVcf, b37Reference);
 
         final long numVariantsBeforeFiltering = VariantContextTestUtils.streamVcf(unfilteredVcf).count();
